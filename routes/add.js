@@ -8,11 +8,18 @@ router.get('/', (req, res) => {
   })
 })
 router.post('/',async (req, res) => {
-  console.log(req.body);
   const { title, price, img } = req.body
-  const course = new Course(title, price, img)
-  await course.save()
-  res.redirect('/courses')// перенапраляет
-  
+  const course = new Course({
+    title,
+    price, 
+    img
+  })// создание js объекта
+
+  try {    
+    await course.save()
+    res.redirect('/courses')// перенапраляет
+  } catch (error) {
+    throw error
+  }
 })
 module.exports = router
