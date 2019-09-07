@@ -6,6 +6,7 @@ const HomeRoute = require('./routes/home')
 const CardRoute = require('./routes/card')
 const AddRuote = require('./routes/add')
 const CouresRoute = require('./routes/courses')
+const User = require('./models/user')
 
 
 const app = express()
@@ -17,6 +18,15 @@ const hbs = exphbs.create({
 app.engine('hbs', hbs.engine)//регистрируем в экспрессе что есть такой движок
 app.set('view engine', 'hbs')//используем этот движок
 app.set('views', 'views')
+app.use(async (req, res, next ) => {
+  try {
+    const user = await User.findById('5d73d6fc6cece208308942da')
+    req.user = user
+    next()
+  } catch (error) {
+    console.log(error); 
+  }
+})
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({extended: true}))
 app.use('/', HomeRoute)
@@ -36,6 +46,19 @@ const start = async () => {
   try {
     const url = 'mongodb+srv://Kolya:YYGIj5cxVsi1AJfN@cluster0-ne92z.mongodb.net/shop'
     await mongoose.connect(url, {useNewUrlParser: true, useFindAndModify: true},)
+    const condidate = await User.findOne()// без параметра возвращает праметр хотя бы одного пользователя 
+    
+    if(!condidate) {
+      const user = new User({
+        email:'kolya@kolya.ru',
+        name:'Kolya',
+        card: {
+          items:[]
+        }
+        
+      })
+      await user.save()// сохраняет объект в базу данных
+    }
     const PORT = process.env.PORT || 3000
     app.listen(PORT, () => {//запуск сервера на порту
       console.log(`Server is running on port ${PORT}`);    

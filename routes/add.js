@@ -12,7 +12,8 @@ router.post('/',async (req, res) => {
   const course = new Course({
     title,
     price, 
-    img
+    img,
+    userId: req.user// можно указывть req.user
   })// создание js объекта
 
   try {    
