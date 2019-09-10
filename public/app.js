@@ -21,11 +21,10 @@ $card.addEventListener('click', event => {
       method: 'delete'
     }).then(res => res.json())
     .then(card => {
-      console.log(card);
       if (card.courses.length) {
         const html = card.courses.map(cour => {
           const {title, count, id} = cour
-          
+         
         return `
               <tr>
                 <td>${title}</td>
@@ -34,7 +33,6 @@ $card.addEventListener('click', event => {
               </tr>
             `
         } ).join('')
-        console.log(html);
         
         $card.querySelector('tbody').innerHTML = html
         $card.querySelector('.price').innerHTML = toCurrency(card.price)

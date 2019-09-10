@@ -32,7 +32,7 @@ userSchema.methods.addToCart = function(course) {
     return cour.courseId.toString() === course._id.toString()
   })
   if (idx >= 0) {
-    items[idx].count = items[idx].count ++
+    items[idx].count++
   } else {
     items.push({
       courseId:course._id,
@@ -42,5 +42,19 @@ userSchema.methods.addToCart = function(course) {
   this.cart = {items}
   return this.save()
 }//обязательно использовать ключевое слово function так как нам нужен this
+
+userSchema.methods.removeFromCard = function(id) {// удаление плохо работает нет ajax
+  let items = [...this.cart.items]
+  const idx = items.findIndex(item =>  item.courseId.toString() === id.toString())
+  if (items[idx].count === 1) {
+    items = items.filter(item => {
+      item.courseId.toString() !== id.toString()
+    })
+  } else {
+    items[idx].count--
+  }
+  this.cart = {items}
+  return(this.save())
+}
 
 module.exports = model('User', userSchema)
